@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
-import { updateUserStart, updateUserSuccess, updateUserFailure } from "../../redux/user/userSlice";
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../../redux/user/userSlice";
 import {
   getStorage,
   ref,
@@ -23,7 +23,24 @@ export default function Profile() {
   
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value})
-  }
+  };
+
+  const handleDelete = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method:'DELETE'
+      });
+      const data = await res.json();
+      if(data.success === false ){
+        return dispatch(deleteUserFailure())
+      }
+      dispatch(deleteUserSuccess());
+    }
+    catch(err) {
+
+    }
+  };
  
 
   useEffect(() => {
@@ -138,7 +155,7 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer"> Delete Account </span>
+        <span className="text-red-700 cursor-pointer" onClick={handleDelete}> Delete Account </span>
         <span className="text-red-700 cursor-pointer"> Sign Out </span>
       </div>
       <p> {error && 'Something went wrong updating your profile'} </p>
