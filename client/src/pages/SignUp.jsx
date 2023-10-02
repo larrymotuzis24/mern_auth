@@ -12,6 +12,7 @@ export default function SignUp() {
   };
 
   const handleSubmit = async (e) => {
+    console.log('handle submit called')
     e.preventDefault();
     try{
       setLoading(true);
@@ -24,6 +25,7 @@ export default function SignUp() {
         body: JSON.stringify(formData)
       });
       const data = await res.json();
+      console.log('Response Data:', data);
       setLoading(false);
       if(data.succes === false ){
         setError(true);
@@ -66,6 +68,7 @@ export default function SignUp() {
           onChange={handleChange}
         />
         <button 
+        type="submit"
         disabled={loading}
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
