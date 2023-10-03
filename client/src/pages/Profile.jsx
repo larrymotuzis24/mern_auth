@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../../redux/user/userSlice";
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure, logUserOut } from "../../redux/user/userSlice";
 import {
   getStorage,
   ref,
@@ -23,6 +23,19 @@ export default function Profile() {
   
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value})
+  };
+
+  const handleLogOut = async() => {
+    try {
+      await fetch('/api/user/signout', {
+        method:'GET'
+      })
+      dispatch(logUserOut())
+      
+    }
+    catch(err){
+      console.log(err)
+    }
   };
 
   const handleDelete = async () => {
@@ -156,7 +169,7 @@ export default function Profile() {
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-700 cursor-pointer" onClick={handleDelete}> Delete Account </span>
-        <span className="text-red-700 cursor-pointer"> Sign Out </span>
+        <span onClick={handleLogOut} className="text-red-700 cursor-pointer"> Sign Out </span>
       </div>
       <p> {error && 'Something went wrong updating your profile'} </p>
       <p className="text-green-700 text-center"> {updateSuccess && 'Update Succesfull'} </p>
